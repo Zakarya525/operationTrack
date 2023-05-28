@@ -6,11 +6,13 @@ import * as Yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { FIRESTORE_DB } from "../../../firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { styles } from "./style";
 import { colors } from "../../utils";
 
 const validationSchema = Yup.object().shape({
-  CNIC: Yup.string().required("CNIC is required"),
+  email: Yup.string().required("email is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
@@ -20,24 +22,20 @@ export const Login = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleLogin = async (values) => {
-    console.log("ADDED");
-    const doc = addDoc(collection(FIRESTORE_DB, "counter"), {
-      patient: "Zakiii",
-      id: "1",
-      done: false,
-    });
-    console.log("ADDED: ", doc);
-  };
-
-  const formatCNIC = (cnic) => {
-    const digitsOnly = cnic.replace(/\D/g, "");
-    const formattedCNIC = digitsOnly.replace(
-      /^(\d{5})(\d{7})(\d{1})$/,
-      "$1-$2-$3"
-    );
-
-    return formattedCNIC;
+  const handleLogin = ({ email, password }) => {
+    console.log(email, password);
+    createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   };
 
   const togglePasswordVisibility = () => {
@@ -46,7 +44,7 @@ export const Login = () => {
 
   return (
     <Formik
-      initialValues={{ CNIC: "", password: "" }}
+      initialValues={{ email: "", password: "" }}
       validationSchema={validationSchema}
       onSubmit={handleLogin}
     >
@@ -62,15 +60,13 @@ export const Login = () => {
             <Icon name="user" size={21} color="gray" />
             <TextInput
               style={styles.input}
-              placeholder="CNIC"
-              onChangeText={(cnic) =>
-                formikProps.setFieldValue("CNIC", formatCNIC(cnic))
-              }
-              value={formikProps.values.CNIC}
+              placeholder="Email"
+              onChangeText={formikProps.handleChange("email")}
+              value={formikProps.values.email}
             />
           </View>
-          {formikProps.errors.CNIC && formikProps.touched.CNIC && (
-            <Text style={styles.error}>{formikProps.errors.CNIC}</Text>
+          {formikProps.errors.email && formikProps.touched.email && (
+            <Text style={styles.error}>{formikProps.errors.email}</Text>
           )}
           <View style={styles.inputContainer}>
             <Icon name="lock" size={21} color="gray" />
