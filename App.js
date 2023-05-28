@@ -1,31 +1,38 @@
+import React, { useEffect } from "react";
 import { StyleSheet, Button, View } from "react-native";
-import { FIRESTORE_DB } from "./firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
-const App = () => {
-  const add = () => {
-    console.log("ADDED");
-    const doc = addDoc(collection(FIRESTORE_DB, "counter"), {
-      patient: "Saddam",
-      id: "1",
-      done: false,
-    });
-    console.log("ADDED: ", doc);
-  };
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigation from "./app/navigations/StackNavigation";
+import { useFonts } from "expo-font";
+import {
+  Urbanist_400Regular,
+  Urbanist_500Medium,
+  Urbanist_600SemiBold,
+  Urbanist_700Bold,
+} from "@expo-google-fonts/urbanist";
+import * as SplashScreen from "expo-splash-screen";
+
+export default function App() {
+  let [fontsLoaded] = useFonts({
+    Urbanist_400Regular,
+    Urbanist_500Medium,
+    Urbanist_600SemiBold,
+    Urbanist_700Bold,
+  });
+
+  useEffect(() => {
+    async function prapare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prapare();
+  }, []);
+
+  if (!fontsLoaded) return undefined;
+
+  SplashScreen.hideAsync();
 
   return (
-    <View style={styles.container}>
-      <Button title="Add" onPress={() => add()} />
-    </View>
+    <NavigationContainer>
+      <StackNavigation />
+    </NavigationContainer>
   );
-};
-
-export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-  },
-});
+}
