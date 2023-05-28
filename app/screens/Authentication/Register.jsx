@@ -6,9 +6,11 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { styles } from "./style";
 import { colors } from "../../utils";
 import { useNavigation } from "@react-navigation/native";
+import { FIREBASE_AUTH } from "../../../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const validationSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
+  email: Yup.string().required("Email is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
@@ -18,8 +20,17 @@ export const Register = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const handleRegister = (data) => {
-    console.log(data);
+  const handleRegister = ({ email, password }) => {
+    createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (user) navigation.navigate("Login", { email, password });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   };
 
   const handleForgotPassword = () => {
@@ -32,7 +43,7 @@ export const Register = () => {
 
   return (
     <Formik
-      initialValues={{ username: "", password: "" }}
+      initialValues={{ email: "", password: "" }}
       validationSchema={validationSchema}
       onSubmit={handleRegister}
     >
@@ -50,12 +61,12 @@ export const Register = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Username"
-                onChangeText={formikProps.handleChange("username")}
-                value={formikProps.values.username}
+                onChangeText={formikProps.handleChange("email")}
+                value={formikProps.values.email}
               />
             </View>
-            {formikProps.errors.username && formikProps.touched.username && (
-              <Text style={styles.error}>{formikProps.errors.username}</Text>
+            {formikProps.errors.email && formikProps.touched.email && (
+              <Text style={styles.error}>{formikProps.errors.email}</Text>
             )}
             <View style={styles.inputContainer}>
               <Icon name="lock" size={24} color="gray" />

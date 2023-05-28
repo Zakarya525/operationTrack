@@ -4,9 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { FIRESTORE_DB } from "../../../firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { styles } from "./style";
 import { colors } from "../../utils";
@@ -24,12 +22,10 @@ export const Login = () => {
 
   const handleLogin = ({ email, password }) => {
     console.log(email, password);
-    createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
-        console.log(user);
-        // ...
+        navigation.navigate("Home", { email: user.email });
       })
       .catch((error) => {
         const errorCode = error.code;
