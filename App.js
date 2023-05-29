@@ -9,7 +9,7 @@ import {
   Urbanist_700Bold,
 } from "@expo-google-fonts/urbanist";
 import * as SplashScreen from "expo-splash-screen";
-
+import { AuthProvider } from "./app/context/Authentication";
 export default function App() {
   let [fontsLoaded] = useFonts({
     Urbanist_400Regular,
@@ -30,8 +30,10 @@ export default function App() {
   SplashScreen.hideAsync();
 
   return (
-    <NavigationContainer>
-      <StackNavigation />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <StackNavigation />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
