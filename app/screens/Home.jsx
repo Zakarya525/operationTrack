@@ -5,7 +5,7 @@ import { FIRESTORE_DB } from "../../firebaseConfig";
 import { colors } from "../utils";
 
 const Home = ({ route }) => {
-  const { email } = route.params;
+  const { email } = route.params || "Guest";
   const [appointmentCount, setAppointmentCount] = useState(0);
   const [appointmentCountDocId, setAppointmentCountDocId] = useState(null);
 

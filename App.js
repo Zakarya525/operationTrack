@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Button, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigation from "./app/navigations/StackNavigation";
 import { useFonts } from "expo-font";

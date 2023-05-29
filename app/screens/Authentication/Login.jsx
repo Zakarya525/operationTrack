@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -25,7 +26,13 @@ export const Login = () => {
     signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigation.navigate("Home", { email: user.email });
+        if (user) {
+          SecureStore.setItemAsync(
+            "authToken",
+            userCredential.user.accessToken
+          );
+          navigation.navigate("Home", { email: userCredential.user.email });
+        }
       })
       .catch((error) => {
         const errorCode = error.code;
