@@ -1,15 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import {
-  onSnapshot,
-  collection,
-  query,
-  getDocs,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, query, getDocs, updateDoc, doc } from "firebase/firestore";
 import { FIRESTORE_DB } from "../../firebaseConfig";
-import { useFonts } from "expo-font";
 import { colors } from "../utils";
 
 const Home = ({ route }) => {
