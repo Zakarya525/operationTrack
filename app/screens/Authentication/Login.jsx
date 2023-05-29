@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
+import { useAuth } from "../../context/Authentication";
 import { styles } from "./style";
 import { colors } from "../../utils";
 
@@ -19,26 +20,12 @@ const validationSchema = Yup.object().shape({
 
 export const Login = () => {
   const navigation = useNavigation();
+  const { signIn } = useAuth();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleLogin = ({ email, password }) => {
     console.log(email, password);
-    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (user) {
-          SecureStore.setItemAsync(
-            "authToken",
-            userCredential.user.accessToken
-          );
-          navigation.navigate("Home", { email: userCredential.user.email });
-        }
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
+    signIn(email, password);
   };
 
   const togglePasswordVisibility = () => {

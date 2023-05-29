@@ -1,13 +1,9 @@
 import { useEffect, useReducer } from "react";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
 import AuthContext from "./authContext";
 import AuthReducer from "./authReducer";
 import { FIREBASE_AUTH } from "../../../firebaseConfig";
-import {
-  deleteAuthToken,
-  saveAuthToken,
-  getAuthToken,
-} from "../../storage/SecureStore";
+import { deleteAuthToken, saveAuthToken } from "../../storage/SecureStore";
 
 export const AuthProvider = ({ children }) => {
   const initialState = {
@@ -25,6 +21,7 @@ export const AuthProvider = ({ children }) => {
       .then((userCredential) => userCredential?.user)
       .then((user) => {
         if (user) {
+          console.log(user);
           saveAuthToken(user?.accessToken);
           dispatch({
             type: "LOGIN_USER_AND_GET_TOKEN",
@@ -89,7 +86,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        // isLoading: state.isLoading,
+        isLoading: state.isLoading,
         // user: state.user,
         // token: state.token,
         signIn,
