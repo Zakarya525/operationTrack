@@ -1,92 +1,136 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { collection, query, getDocs, updateDoc, doc } from "firebase/firestore";
+import {
+  Text,
+  Image,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from "react-native";
+import { collection, query, getDocs, addDoc } from "firebase/firestore";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { colors } from "../utils";
+import { useAuth } from "../context/Authentication";
+import PatientForm from "../components/Patient/PatientForm";
+import { StatusBar } from "expo-status-bar";
+import tw from "twrnc";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { styles } from "./styles";
+import { useNavigation } from "@react-navigation/native";
+import Patient from "../components/Patient/Patient";
 
-const Home = ({ route }) => {
-  const { email } = route.params || "Guest";
-  const [appointmentCount, setAppointmentCount] = useState(0);
-  const [appointmentCountDocId, setAppointmentCountDocId] = useState(null);
+const Home = () => {
+  const { user, logOut } = useAuth();
+  const navigation = useNavigation();
+  const windowHeight = Dimensions.get("window").height;
+
+  const [patients, setPatients] = useState([]);
+  const [patientCount, setPatientCount] = useState(0);
+  const [showPatientForm, setShowPatientForm] = useState(false);
+  const [counter, setCounter] = useState(patientCount);
 
   useEffect(() => {
-    const fetchAppointmentCount = async () => {
-      const appointmentCountCollectionRef = collection(
-        FIRESTORE_DB,
-        "appointmentCount"
-      );
-      const q = query(appointmentCountCollectionRef);
-      const querySnapshot = await getDocs(q);
+    const fetchPatients = async () => {
+      try {
+        const patientsCollectionRef = collection(FIRESTORE_DB, "patients");
+        const querySnapshot = await getDocs(query(patientsCollectionRef));
 
-      querySnapshot.empty
-        ? setAppointmentCountDocId(doc(appointmentCountCollectionRef).id)
-        : (setAppointmentCount(querySnapshot.docs[0].data().count || 0),
-          setAppointmentCountDocId(querySnapshot.docs[0].id));
+        const fetchedPatients = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPatients(fetchedPatients);
+        setPatientCount(fetchedPatients.length);
+      } catch (error) {
+        console.log("Error fetching patients:", error);
+      }
     };
 
-    fetchAppointmentCount();
-  }, [appointmentCount]);
+    fetchPatients();
+  }, []);
 
-  const handleIncrementAppointmentCount = async () => {
-    const newCount = appointmentCount + 1;
-    if (newCount <= 10 && appointmentCountDocId) {
-      const appointmentCountDocRef = doc(
-        FIRESTORE_DB,
-        "appointmentCount",
-        appointmentCountDocId
-      );
-      await updateDoc(appointmentCountDocRef, { count: newCount });
-      setAppointmentCount(newCount);
+  const handleLogOut = () => {
+    logOut();
+  };
+
+  const handlePatientSubmit = async (patientData) => {
+    if (patientCount >= 10) {
+      return;
+    }
+
+    try {
+      const patientCollectionRef = collection(FIRESTORE_DB, "patients");
+      await addDoc(patientCollectionRef, patientData);
+      setPatientCount((prevCount) => prevCount + 1);
+      setCounter((prevCounter) => prevCounter + 1);
+      setShowPatientForm(false);
+    } catch (error) {
+      console.log("Error adding patient:", error);
     }
   };
 
+  const togglePatientForm = () => {
+    setShowPatientForm((prevShowPatientForm) => !prevShowPatientForm);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome dear</Text>
-      <Text style={styles.welcomeText}>{email}</Text>
-      <Text style={styles.appointmentCountText}>
-        Today's Booked Operations: {appointmentCount}
-      </Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleIncrementAppointmentCount}
-        disabled={appointmentCount >= 10}
-      >
-        <Text style={styles.buttonText}>Book Appointment</Text>
+    <View>
+      <Text style={styles.headingLarge}>Greeting {user.email}</Text>
+      <TouchableOpacity onPress={handleLogOut} style={styles.logoutButton}>
+        <Icon name="sign-out" size={25} color="black" />
       </TouchableOpacity>
+      <Image
+        style={tw`w-80 h-48 ml-10 rounded-xl`}
+        source={require("../images/banner.jpg")}
+      />
+
+      <View style={styles.addPatientContainer}>
+        <Text style={styles.heading}>Add Patient</Text>
+        {!showPatientForm && (
+          <TouchableOpacity
+            onPress={togglePatientForm}
+            disabled={patientCount >= 10}
+          >
+            <Icon name="user-plus" size={50} color={colors.primaryColor} />
+          </TouchableOpacity>
+        )}
+        <Text style={styles.heading}>
+          Total added Patients for Today: {patientCount}
+        </Text>
+      </View>
+
+      {showPatientForm && counter < 10 && (
+        <PatientForm onSubmit={handlePatientSubmit} disabled={counter >= 10} />
+      )}
+      {counter >= 10 && <Text>Patient limit reached</Text>}
+      <View style={tw`flex-row justify-between`}>
+        <Text style={styles.headingMedium}>
+          Today's {patientCount == 1 ? "Patient" : "Patients"}
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("PatientList")}>
+          <Text
+            style={{
+              color: colors.primaryColor,
+              marginTop: 10,
+              marginEnd: 10,
+              fontFamily: "Urbanist_700Bold",
+            }}
+          >
+            See All
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <ScrollView style={{ maxHeight: windowHeight * 0.4 }}>
+          {patients.map((patient) => {
+            return <Patient key={patient.id} patient={patient} />;
+          })}
+        </ScrollView>
+      </View>
+      <StatusBar style="auto" />
     </View>
   );
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  welcomeText: {
-    fontFamily: "Urbanist_600SemiBold",
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  appointmentCountText: {
-    fontFamily: "Urbanist_400Regular",
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: colors.primaryColor,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontFamily: "Urbanist_600SemiBold",
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-});

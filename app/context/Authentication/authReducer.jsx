@@ -12,6 +12,7 @@ export default (state, action) => {
       return {
         ...state,
         token: action.token,
+        user: action.user,
         isLoading: false,
       };
 
