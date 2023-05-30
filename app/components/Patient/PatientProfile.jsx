@@ -1,15 +1,15 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import tw from "twrnc";
 import { colors } from "../../utils";
 import { styles } from "./styles";
 
-const PatientProfile = ({ route }) => {
+const PatientProfile = () => {
   const navigation = useNavigation();
-  const { patient } = route.params.patient;
-  console.log(patient);
+  const route = useRoute();
+  const { patient } = route.params;
 
   const handleClick = () => {
     //   navigation.navigate("BookAppointment");
