@@ -18,14 +18,17 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Patient from "../components/Patient/Patient";
+import { usePatient } from "../context/Patient";
 
 const Home = () => {
   const { user, logOut } = useAuth();
+  const { patientCount } = usePatient();
+  console.log(patientCount);
+
   const navigation = useNavigation();
   const windowHeight = Dimensions.get("window").height;
 
   const [patients, setPatients] = useState([]);
-  const [patientCount, setPatientCount] = useState(0);
   const [showPatientForm, setShowPatientForm] = useState(false);
   const [counter, setCounter] = useState(patientCount);
 

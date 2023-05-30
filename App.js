@@ -10,6 +10,7 @@ import {
 } from "@expo-google-fonts/urbanist";
 import * as SplashScreen from "expo-splash-screen";
 import { AuthProvider } from "./app/context/Authentication";
+import { PatientProvider } from "./app/context/Patient/PatientProvider";
 export default function App() {
   let [fontsLoaded] = useFonts({
     Urbanist_400Regular,
@@ -31,9 +32,11 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <StackNavigation />
-      </NavigationContainer>
+      <PatientProvider>
+        <NavigationContainer>
+          <StackNavigation />
+        </NavigationContainer>
+      </PatientProvider>
     </AuthProvider>
   );
 }
