@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -75,5 +74,12 @@ export const styles = StyleSheet.create({
   socialButtonIcon: {
     width: 40,
     height: 40,
+  },
+  back: {
+    position: "absolute",
+    top: 20,
+    left: 0,
+    right: 10,
+    padding: 10,
   },
 });

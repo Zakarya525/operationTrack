@@ -1,16 +1,27 @@
 import React from "react";
-import { Button, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../../screens/Authentication/style";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { usePatient } from "../../context/Patient";
+import { colors } from "../../utils";
 
-const PatientForm = ({ onSubmit }) => {
+const PatientForm = () => {
   const navigation = useNavigation();
+  const { addPatient } = usePatient();
 
   const handleSubmit = (values) => {
-    console.log(values);
+    addPatient(values);
     navigation.navigate("Home");
   };
 
@@ -25,7 +36,10 @@ const PatientForm = ({ onSubmit }) => {
   });
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} keyboardVerticalOffset={100}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
+        <Icon name="arrow-left" size={20} color={colors.primaryColor} />
+      </TouchableOpacity>
       <Formik
         initialValues={{
           date: "",
@@ -42,7 +56,6 @@ const PatientForm = ({ onSubmit }) => {
         {(formikProps) => (
           <View style={styles.container}>
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Date (dd-mm-yyyy)"
@@ -55,7 +68,6 @@ const PatientForm = ({ onSubmit }) => {
             )}
 
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Day"
@@ -67,7 +79,6 @@ const PatientForm = ({ onSubmit }) => {
               <Text style={styles.error}>{formikProps.errors.day}</Text>
             )}
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="OT Table"
@@ -79,7 +90,6 @@ const PatientForm = ({ onSubmit }) => {
               <Text style={styles.error}>{formikProps.errors.otTable}</Text>
             )}
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Patient Name"
@@ -94,7 +104,6 @@ const PatientForm = ({ onSubmit }) => {
                 </Text>
               )}
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Daignosis"
@@ -106,7 +115,6 @@ const PatientForm = ({ onSubmit }) => {
               <Text style={styles.error}>{formikProps.errors.diagnosis}</Text>
             )}
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Procedure"
@@ -118,7 +126,6 @@ const PatientForm = ({ onSubmit }) => {
               <Text style={styles.error}>{formikProps.errors.procedure}</Text>
             )}
             <View style={styles.inputContainer}>
-              <Icon name="user" size={21} color="gray" />
               <TextInput
                 style={styles.input}
                 placeholder="Consultant Name"
@@ -133,11 +140,11 @@ const PatientForm = ({ onSubmit }) => {
                 </Text>
               )}
 
-            <Button title="Submit" onPress={formikProps.handleSubmit} />
+            <Button title="Add Patient" onPress={formikProps.handleSubmit} />
           </View>
         )}
       </Formik>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -10,6 +10,7 @@ import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { useAuth } from "../../context/Authentication";
 import { styles } from "./style";
 import { colors } from "../../utils";
+import Loader from "../../components/Loader/Loader";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("email is required"),
@@ -20,8 +21,12 @@ const validationSchema = Yup.object().shape({
 
 export const Login = () => {
   const navigation = useNavigation();
-  const { signIn } = useAuth();
+  const { signIn, isLoading } = useAuth();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   const handleLogin = ({ email, password }) => {
     console.log(email, password);

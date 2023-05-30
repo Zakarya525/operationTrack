@@ -9,6 +9,7 @@ import {
   PatientList,
   PatientProfile,
 } from "../components/Patient";
+import { usePatient } from "../context/Patient";
 
 const Stack = createNativeStackNavigator();
 

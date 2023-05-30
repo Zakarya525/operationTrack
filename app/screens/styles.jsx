@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   heading: {
     fontSize: 18,
     fontFamily: "Urbanist_600SemiBold",
-    marginVertical: 10,
+    marginVertical: 5,
   },
   addButton: {
     backgroundColor: colors.primaryColor,
