@@ -108,18 +108,6 @@ const Home = () => {
         <Text style={styles.headingMedium}>
           Today's {patientCount == 1 ? "Patient" : "Patients"}
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("PatientList")}>
-          <Text
-            style={{
-              color: colors.primaryColor,
-              marginTop: 10,
-              marginEnd: 10,
-              fontFamily: "Urbanist_700Bold",
-            }}
-          >
-            See All
-          </Text>
-        </TouchableOpacity>
       </View>
       <View>
         <ScrollView style={{ maxHeight: windowHeight * 0.4 }}>
