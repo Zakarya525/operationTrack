@@ -36,7 +36,11 @@ const PatientForm = () => {
   });
 
   return (
-    <KeyboardAvoidingView style={styles.container} keyboardVerticalOffset={100}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="height"
+      keyboardVerticalOffset="25"
+    >
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}>
         <Icon name="arrow-left" size={20} color={colors.primaryColor} />
       </TouchableOpacity>

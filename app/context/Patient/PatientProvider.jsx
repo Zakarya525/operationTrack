@@ -1,19 +1,23 @@
 import { useEffect, useReducer } from "react";
-import PatientReducer from "./patientReducer";
+import PatientReducer from "./PatientReducer";
 import PatientContext from "./patientContext";
 import { collection, query, getDocs, addDoc } from "firebase/firestore";
-import { FIRESTORE_DB } from "../../firebaseConfig";
+import { FIRESTORE_DB } from "../../../firebaseConfig";
 
 export const PatientProvider = ({ children }) => {
   const initialState = {
     patients: [],
     patientCount: 0,
     counter: 0,
+    isLoading: false,
   };
 
   const [state, dispatch] = useReducer(PatientReducer, initialState);
 
+  const setLoading = () => dispatch({ type: "SET_LOADING" });
+
   useEffect(() => {
+    setLoading();
     const fetchPatients = async () => {
       try {
         const querySnapshot = await getDocs(
@@ -23,7 +27,7 @@ export const PatientProvider = ({ children }) => {
           id: doc.id,
           ...doc.data(),
         }));
-
+        console.log(fetchedPatients.length);
         dispatch({
           type: "SET_PATIENTS",
           payload: fetchedPatients,
@@ -35,9 +39,10 @@ export const PatientProvider = ({ children }) => {
     };
 
     fetchPatients();
-  }, []);
+  }, [state.patientCount]);
 
   const addPatient = async (patientData) => {
+    setLoading();
     if (state.patientCount >= 10) {
       return;
     }

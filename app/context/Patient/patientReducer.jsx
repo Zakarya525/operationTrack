@@ -5,6 +5,7 @@ export default (state, action) => {
         ...state,
         patients: action.payload,
         patientCount: action.count,
+        isLoading: false,
       };
     case "INCREMENT_PATIENT_COUNT":
       return {
@@ -15,6 +16,12 @@ export default (state, action) => {
       return {
         ...state,
         counter: state.counter + 1,
+        isLoading: false,
+      };
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: true,
       };
     default:
       return state;
