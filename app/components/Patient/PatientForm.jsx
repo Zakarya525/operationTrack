@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
@@ -16,6 +17,8 @@ import * as yup from "yup";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { usePatient } from "../../context/Patient";
 import { colors } from "../../utils";
+
+const { width } = Dimensions.get("window");
 
 const PatientForm = () => {
   const navigation = useNavigation();
@@ -47,7 +50,11 @@ const PatientForm = () => {
           onPress={() => navigation.goBack()}
           style={styles.back}
         >
-          <Icon name="arrow-left" size={20} color={colors.primaryColor} />
+          <Icon
+            name="arrow-left"
+            size={width * 0.05}
+            color={colors.primaryColor}
+          />
         </TouchableOpacity>
         <Formik
           initialValues={{
@@ -115,7 +122,7 @@ const PatientForm = () => {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Daignosis"
+                  placeholder="Diagnosis"
                   onChangeText={formikProps.handleChange("diagnosis")}
                   value={formikProps.values.diagnosis}
                 />
@@ -179,43 +186,42 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   formContainer: {
-    marginTop: 100,
-    paddingHorizontal: 20,
+    marginTop: width * 0.3,
+    paddingHorizontal: width * 0.05,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
-    borderRadius: 10,
+    marginBottom: width * 0.05,
+    borderRadius: width * 0.04,
     backgroundColor: "#fbfcf8",
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.1,
   },
   input: {
-    height: 40,
-
-    paddingHorizontal: 10,
+    height: width * 0.1,
+    paddingHorizontal: width * 0.02,
   },
   error: {
     color: "red",
-    marginBottom: 5,
+    marginBottom: width * 0.02,
   },
   button: {
     backgroundColor: colors.primaryColor,
-    paddingVertical: 12,
-    borderRadius: 10,
+    paddingVertical: width * 0.03,
+    borderRadius: width * 0.04,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: width * 0.05,
   },
   buttonText: {
     color: "#fff",
     fontFamily: "Urbanist_600SemiBold",
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
   back: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 40 : 30,
-    left: 10,
+    top: Platform.OS === "ios" ? width * 0.1 : width * 0.09,
+    left: width * 0.02,
     zIndex: 1,
   },
 });
