@@ -13,6 +13,13 @@ export const styles = StyleSheet.create({
     alignContent: "center",
     marginBottom: 20,
   },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  formContainer: {
+    paddingHorizontal: 20,
+  },
   backButton: {
     marginRight: 20,
   },
