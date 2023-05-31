@@ -46,6 +46,9 @@ export const AuthProvider = ({ children }) => {
         dispatch({ type: "SET_LOADING_FALSE" });
       }
     } catch (error) {
+      dispatch({
+        type: "SET_LOADING_FALSE",
+      });
       console.log("Sign in failed:", error);
     }
   };

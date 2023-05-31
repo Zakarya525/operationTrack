@@ -12,6 +12,6 @@ export default Header;
 const styles = StyleSheet.create({
   text: {
     fontFamily: "Urbanist_700Bold",
-    fontSize: fontSizes.xxl,
+    fontSize: fontSizes.xl,
   },
 });
